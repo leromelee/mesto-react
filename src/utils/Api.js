@@ -1,73 +1,74 @@
 class Api {
-    constructor({ baseUrl, headers }) {
-        this._baseUrl = baseUrl;
+
+    constructor({ url, headers }) {
+        this._url = url;
         this._headers = headers;
-    };
+    }
+
+    updateUser(user) {
+        const url = `${this._url}/users/me`;
+        return fetch(url, {
+            method: "PATCH",
+            headers: this._headers,
+            body: JSON.stringify(user),
+        }).then(handleResponse);
+    }
+
+    updateAvatar(user) {
+        const url = `${this._url}/users/me/avatar`;
+        return fetch(url, {
+            method: "PATCH",
+            headers: this._headers,
+            body: JSON.stringify(user),
+        }).then(handleResponse);
+    }
 
     getInitialCards() {
-        const url = `${this._baseUrl}/cards`;
+        const url = `${this._url}/cards`;
         return fetch(url, {
             headers: this._headers,
         }).then(handleResponse);
-    };
+    }
 
     getUserData() {
-        const url = `${this._baseUrl}/users/me`;
+        const url = `${this._url}/users/me`;
         return fetch(url, {
             headers: this._headers,
         }).then(handleResponse);
-    };
+    }
 
     createCard(card) {
-        const url = `${this._baseUrl}/cards`;
+        const url = `${this._url}/cards`;
         return fetch(url, {
             headers: this._headers,
             method: "POST",
             body: JSON.stringify(card),
         }).then(handleResponse);
-    };
+    }
 
     deleteCard(cardId) {
-        const url = `${this._baseUrl}/cards/${cardId}`;
+        const url = `${this._url}/cards/${cardId}`;
         return fetch(url, {
             headers: this._headers,
             method: "DELETE",
         }).then(handleResponse);
-    };
+    }
 
-    updateUser(user) {
-        const url = `${this._baseUrl}/users/me`;
+    removeLike(cardId) {
+        const url = `${this._url}/cards/likes/${cardId}`;
         return fetch(url, {
-            method: "PATCH",
+            method: "DELETE",
             headers: this._headers,
-            body: JSON.stringify(user),
         }).then(handleResponse);
-    };
-
-    updateAvatar(user) {
-        const url = `${this._baseUrl}/users/me/avatar`;
-        return fetch(url, {
-            method: "PATCH",
-            headers: this._headers,
-            body: JSON.stringify(user),
-        }).then(handleResponse);
-    };
+    }
 
     addLike(cardId) {
-        const url = `${this._baseUrl}/cards/likes/${cardId}`;
+        const url = `${this._url}/cards/likes/${cardId}`;
         return fetch(url, {
             method: "PUT",
             headers: this._headers,
         }).then(handleResponse);
-    };
-
-    removeLike(cardId) {
-        const url = `${this._baseUrl}/cards/likes/${cardId}`;
-        return fetch(url, {
-            method: "DELETE",
-            headers: this._headers,
-        }).then(handleResponse);
-    };
+    }
 };
 
 const handleResponse = (res) => {
@@ -75,10 +76,10 @@ const handleResponse = (res) => {
         return Promise.reject(`Error: ${res.status}`);
     }
     return res.json();
-};
+}
 
 const api = new Api({
-    baseUrl: "https://mesto.nomoreparties.co/v1/cohort-26",
+    url: "https://mesto.nomoreparties.co/v1/cohort-26",
     headers: {
         authorization: "e343e8e1-608e-40c1-bda2-485b4f9fb449",
         "Content-Type": "application/json",

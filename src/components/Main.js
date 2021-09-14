@@ -4,14 +4,16 @@ import api from '../utils/Api.js'
 
 function Main(props) {
 
-    const [userInfo, setUserInfo] = React.useState({ userName: "", userDescription: "", userAvatar: "" });
     const [cards, setCards] = React.useState([]);
+
+    const [userInfo, setUserInfo] = React.useState({ userName: "", userDesc: "", userAvatar: "" });
+
     React.useEffect(() => {
         Promise.all([api.getUserData(), api.getInitialCards()])
             .then(([userData, initialCards]) => {
                 setUserInfo({
                     userName: userData.name,
-                    userDescription: userData.about,
+                    userDesc: userData.about,
                     userAvatar: userData.avatar,
                 });
                 setCards(initialCards);
@@ -32,11 +34,14 @@ function Main(props) {
                 </div>
                 <div className="profile__info">
                     <h1 className="profile__name">{userInfo.userName}</h1>
-                    <p className="profile__disc">{userInfo.userDescription}</p>
+                    <p className="profile__disc">{userInfo.userDesc}</p>
                     <button name="popup__edit" className="profile__edit-button" type="button" onClick={props.onEditProfile}></button>
                 </div>
                 <button className="profile__add-button" type="button" onClick={props.isAddPlacePopupOpen}></button>
             </section>
+
+
+
             <section className="cards">
                 <ul className='card'>
                     {cards.map((card, i) => {
