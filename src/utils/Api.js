@@ -1,89 +1,87 @@
 class Api {
-
     constructor({ url, headers }) {
         this._url = url;
         this._headers = headers;
     }
 
-    updateUser(user) {
-        const url = `${this._url}/users/me`;
-        return fetch(url, {
-            method: "PATCH",
-            headers: this._headers,
-            body: JSON.stringify(user),
-        }).then(handleResponse);
-    }
-
-    updateAvatar(user) {
-        const url = `${this._url}/users/me/avatar`;
-        return fetch(url, {
-            method: "PATCH",
-            headers: this._headers,
-            body: JSON.stringify(user),
-        }).then(handleResponse);
+    _checkRequest(res) {
+        if (res.ok) {
+            return res.json();
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
     }
 
     getInitialCards() {
-        const url = `${this._url}/cards`;
-        return fetch(url, {
-            headers: this._headers,
-        }).then(handleResponse);
+        return fetch(`${this._url}/cards`, {
+            headers: {authorization: `${this._headers}`}
+        })
+            .then(res => this._checkRequest(res));
     }
 
-    getUserData() {
-        const url = `${this._url}/users/me`;
-        return fetch(url, {
-            headers: this._headers,
-        }).then(handleResponse);
+    getUserInfo() {
+        return fetch(`${this._url}/users/me`, {
+            headers: {authorization: `${this._headers}`}
+        })
+            .then(res => this._checkRequest(res));
     }
 
-    createCard(card) {
-        const url = `${this._url}/cards`;
-        return fetch(url, {
-            headers: this._headers,
-            method: "POST",
-            body: JSON.stringify(card),
-        }).then(handleResponse);
-    }
-
-    deleteCard(cardId) {
-        const url = `${this._url}/cards/${cardId}`;
-        return fetch(url, {
-            headers: this._headers,
-            method: "DELETE",
-        }).then(handleResponse);
-    }
-
-    removeLike(cardId) {
-        const url = `${this._url}/cards/likes/${cardId}`;
-        return fetch(url, {
-            method: "DELETE",
-            headers: this._headers,
-        }).then(handleResponse);
+    addCard(name, link) {
+        return fetch(`${this._url}/cards`,
+            {method: 'POST',
+                headers: {authorization: `${this._headers}`, 'Content-Type': 'application/json'},
+                body: JSON.stringify({name: name, link: link})
+            })
+            .then(res => this._checkRequest(res));
     }
 
     addLike(cardId) {
-        const url = `${this._url}/cards/likes/${cardId}`;
-        return fetch(url, {
-            method: "PUT",
-            headers: this._headers,
-        }).then(handleResponse);
+        return fetch(`${this._url}/cards/likes/${cardId}`,
+            {method: 'PUT',
+                headers: {authorization: `${this._headers}`, 'Content-Type': 'application/json'
+                }
+            })
+            .then(res => this._checkRequest(res));
     }
-};
 
-const handleResponse = (res) => {
-    if (!res.ok) {
-        return Promise.reject(`Error: ${res.status}`);
+    updateUser(name, about) {
+        return fetch(`${this._url}/users/me`, {
+            method: 'PATCH',
+            headers: {authorization: `${this._headers}`, 'Content-Type': 'application/json'},
+            body: JSON.stringify({name: name, about: about})
+        })
+            .then(res => this._checkRequest(res));
     }
-    return res.json();
+
+    updateAvatar(avatarUrl) {
+        return fetch(`${this._url}/users/me/avatar`, {
+            method: 'PATCH',
+            headers: {authorization: `${this._headers}`, 'Content-Type': 'application/json'},
+            body: JSON.stringify({avatar: avatarUrl})
+        })
+            .then(res => this._checkRequest(res));
+    }
+
+    deleteCard(cardId) {
+        return fetch(`${this._url}/cards/${cardId}`,
+            {method: 'DELETE',
+            headers: {authorization: `${this._headers}`, 'Content-Type': 'application/json'}
+        })
+            .then(res => this._checkRequest(res));
+    }
+
+    removeLike(cardId) {
+        return fetch(`${this._url}/cards/likes/${cardId}`, {
+            method: 'DELETE',
+            headers: {authorization: `${this._headers}`, 'Content-Type': 'application/json'}
+        })
+            .then(res => this._checkRequest(res));
+    }
 }
 
 const api = new Api({
-    url: "https://mesto.nomoreparties.co/v1/cohort-26",
-    headers: {
-        authorization: "e343e8e1-608e-40c1-bda2-485b4f9fb449",
-        "Content-Type": "application/json",
-    },
+    url: 'https://mesto.nomoreparties.co/v1/cohort-26',
+    headers: 'e343e8e1-608e-40c1-bda2-485b4f9fb449'
 });
 
 export default api;
+

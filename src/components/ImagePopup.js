@@ -1,16 +1,15 @@
-function ImagePopup(props) {
-
-    return ((
-        <div className={props.isOpen ? `popup popup_active popup_type_${props.name}` : `popup popup_type_${props.name}`}>
-            <div className="popup__form">
-                <figure className="popup__content-closecard">
-                    <button className="popup__button-close" type="reset" onClick={props.closeAllPopups}></button>
-                    <img className="popup__photo" src={props.card.link} alt={props.card.name} />
-                    <figcaption className="popup__name">{props.card.name}</figcaption>
-                </figure>
+function ImagePopup({onClose, card}) {
+    return (
+        <section
+            className={`popup popup_type_closecard ${card.link ? 'popup_active' : ''}`}
+        >
+            <div className="popup__content-closecard">
+                <img className="popup__photo" src={card.link} alt={card.name} />
+                <button type="button" className="popup__button-close" aria-label="Закрыть попап" onClick={onClose} />
+                <p className="popup__name">{card.name}</p>
             </div>
-        </div>
-    ));
-};
+        </section>
+    );
+}
 
 export default ImagePopup;
