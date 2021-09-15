@@ -49,7 +49,17 @@ function App () {
             .catch(err => console.log (err));
     }, []);
 
+    React.useEffect(() => {
+        const closeByEscape = (e) => {
+            if (e.key === 'Escape') {
+                closeAllPopups();
+            }
+        }
 
+        document.addEventListener('keydown', closeByEscape)
+
+        return () => document.removeEventListener('keydown', closeByEscape)
+    }, [])
 
     function handleUpdateUser(currentUser) {
         api.updateUser(currentUser.name, currentUser.about)
